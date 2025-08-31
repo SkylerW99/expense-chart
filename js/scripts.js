@@ -1,18 +1,37 @@
 // This file is intentionally left blank.document.addEventListener("DOMContentLoaded", () => {
-    const months = [
-        "Jan", "Feb", "Mar", "Apr", "May", "Jun",
-        "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
-    ];
+const months = [
+  "Jan",
+  "Feb",
+  "Mar",
+  "Apr",
+  "May",
+  "Jun",
+  "Jul",
+  "Aug",
+  "Sep",
+  "Oct",
+  "Nov",
+  "Dec",
+];
 
-    const dataContainer = document.getElementById("data-container");
+const dataContainer = document.getElementById("data-container");
 
-    // Initialize income and expenses arrays
-    const incomeData = new Array(12).fill(0);
-    const expensesData = new Array(12).fill(0);
+// Initialize income and expenses arrays
+const incomeData = new Array(12).fill(0);
+const expensesData = new Array(12).fill(0);
 
-    // Generate input fields dynamically
-    months.forEach((month, index) => {
-        const monthHtml = `
+// Download chart as PNG
+const downloadBtn = document.getElementById("download-btn");
+downloadBtn.addEventListener("click", () => {
+  const link = document.createElement("a");
+  link.href = barChart.toBase64Image(); // Get the chart as a Base64 image
+  link.download = "chart.png"; // Set the download filename
+  link.click(); // Trigger the download
+});
+
+// Generate input fields dynamically
+months.forEach((month, index) => {
+  const monthHtml = `
             <div class="col-12 col-md-6 mb-3">
                 <h4>${month}</h4>
                 <div class="p-3 border bg-light">
@@ -29,63 +48,63 @@
                 </div>
             </div>
         `;
-        dataContainer.innerHTML += monthHtml;
-    });
+  dataContainer.innerHTML += monthHtml;
+});
 
-    // Chart.js Bar Chart
-    const ctx = document.getElementById("barChart").getContext("2d");
-    const barChart = new Chart(ctx, {
-        type: "bar",
-        data: {
-            labels: months,
-            datasets: [
-                {
-                    label: "Income",
-                    data: incomeData,
-                    backgroundColor: "rgba(75, 192, 192, 0.6)",
-                    borderColor: "rgba(75, 192, 192, 1)",
-                    borderWidth: 1,
-                },
-                {
-                    label: "Expenses",
-                    data: expensesData,
-                    backgroundColor: "rgba(255, 99, 132, 0.6)",
-                    borderColor: "rgba(255, 99, 132, 1)",
-                    borderWidth: 1,
-                },
-            ],
-        },
-        options: {
-            responsive: true,
-            plugins: {
-                legend: {
-                    position: "top",
-                },
-                title: {
-                    display: true,
-                    text: "Income vs Expenses (Jan - Dec)",
-                },
-            },
-            scales: {
-                y: {
-                    beginAtZero: true,
-                },
-            },
-        },
-    });
+// Chart.js Bar Chart
+const ctx = document.getElementById("barChart").getContext("2d");
+const barChart = new Chart(ctx, {
+  type: "bar",
+  data: {
+    labels: months,
+    datasets: [
+      {
+        label: "Income",
+        data: incomeData,
+        backgroundColor: "rgba(75, 192, 192, 0.6)",
+        borderColor: "rgba(75, 192, 192, 1)",
+        borderWidth: 1,
+      },
+      {
+        label: "Expenses",
+        data: expensesData,
+        backgroundColor: "rgba(255, 99, 132, 0.6)",
+        borderColor: "rgba(255, 99, 132, 1)",
+        borderWidth: 1,
+      },
+    ],
+  },
+  options: {
+    responsive: true,
+    plugins: {
+      legend: {
+        position: "top",
+      },
+      title: {
+        display: true,
+        text: "Income vs Expenses (Jan - Dec)",
+      },
+    },
+    scales: {
+      y: {
+        beginAtZero: true,
+      },
+    },
+  },
+});
 
-    // Update chart data when user inputs values
-    dataContainer.addEventListener("input", (event) => {
-        const target = event.target;
-        const index = parseInt(target.dataset.index, 10);
-        const type = target.dataset.type;
+// Update chart data when user inputs values
+dataContainer.addEventListener("input", (event) => {
+  const target = event.target;
+  const index = parseInt(target.dataset.index, 10);
+  const type = target.dataset.type;
 
-        if (type === "income") {
-            incomeData[index] = parseFloat(target.value) || 0; // Update income data
-        } else if (type === "expenses") {
-            expensesData[index] = parseFloat(target.value) || 0; // Update expenses data
-        }
+  if (type === "income") {
+    incomeData[index] = parseFloat(target.value) || 0; // Update income data
+  } else if (type === "expenses") {
+    expensesData[index] = parseFloat(target.value) || 0; // Update expenses data
+  }
 
-        // Update the chart
-        barChart.update();
-    });
+  // Update the chart
+  barChart.update();
+});
